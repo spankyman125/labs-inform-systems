@@ -14,7 +14,7 @@ namespace InformSys1
     public partial class Form1 : Form
     {
         NpgsqlConnection db_connection;
-        string db_connection_string;
+        string db_connection_string;//123
 
         public Form1()
         {
