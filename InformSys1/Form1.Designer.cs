@@ -31,7 +31,6 @@ namespace InformSys1
         {
             this.ButtonConnect = new System.Windows.Forms.Button();
             this.ButtonDisconnect = new System.Windows.Forms.Button();
-            this.TextInfo = new System.Windows.Forms.TextBox();
             this.InitInfoLabel = new System.Windows.Forms.Label();
             this.ServerTextBox = new System.Windows.Forms.TextBox();
             this.LabelServer = new System.Windows.Forms.Label();
@@ -48,13 +47,16 @@ namespace InformSys1
             this.ConnectionInfoLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.dataGrid = new System.Windows.Forms.DataGridView();
+            this.listBox = new System.Windows.Forms.ListBox();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // ButtonConnect
             // 
             this.ButtonConnect.Enabled = false;
             this.ButtonConnect.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.ButtonConnect.Location = new System.Drawing.Point(875, 457);
+            this.ButtonConnect.Location = new System.Drawing.Point(980, 528);
             this.ButtonConnect.Name = "ButtonConnect";
             this.ButtonConnect.Size = new System.Drawing.Size(101, 29);
             this.ButtonConnect.TabIndex = 0;
@@ -66,27 +68,19 @@ namespace InformSys1
             // 
             this.ButtonDisconnect.Enabled = false;
             this.ButtonDisconnect.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.ButtonDisconnect.Location = new System.Drawing.Point(775, 457);
+            this.ButtonDisconnect.Location = new System.Drawing.Point(980, 493);
             this.ButtonDisconnect.Name = "ButtonDisconnect";
-            this.ButtonDisconnect.Size = new System.Drawing.Size(94, 29);
+            this.ButtonDisconnect.Size = new System.Drawing.Size(101, 29);
             this.ButtonDisconnect.TabIndex = 1;
             this.ButtonDisconnect.Text = "Disconnect";
             this.ButtonDisconnect.UseVisualStyleBackColor = true;
             this.ButtonDisconnect.Click += new System.EventHandler(this.Disconnect_click);
             // 
-            // TextInfo
-            // 
-            this.TextInfo.Location = new System.Drawing.Point(224, 85);
-            this.TextInfo.Multiline = true;
-            this.TextInfo.Name = "TextInfo";
-            this.TextInfo.Size = new System.Drawing.Size(752, 357);
-            this.TextInfo.TabIndex = 2;
-            // 
             // InitInfoLabel
             // 
             this.InitInfoLabel.AutoSize = true;
             this.InitInfoLabel.ForeColor = System.Drawing.Color.Red;
-            this.InitInfoLabel.Location = new System.Drawing.Point(797, 21);
+            this.InitInfoLabel.Location = new System.Drawing.Point(8, 9);
             this.InitInfoLabel.Name = "InitInfoLabel";
             this.InitInfoLabel.Size = new System.Drawing.Size(179, 20);
             this.InitInfoLabel.TabIndex = 3;
@@ -94,7 +88,7 @@ namespace InformSys1
             // 
             // ServerTextBox
             // 
-            this.ServerTextBox.Location = new System.Drawing.Point(34, 85);
+            this.ServerTextBox.Location = new System.Drawing.Point(8, 98);
             this.ServerTextBox.Name = "ServerTextBox";
             this.ServerTextBox.Size = new System.Drawing.Size(162, 27);
             this.ServerTextBox.TabIndex = 4;
@@ -104,7 +98,7 @@ namespace InformSys1
             // 
             this.LabelServer.AutoSize = true;
             this.LabelServer.ForeColor = System.Drawing.Color.Black;
-            this.LabelServer.Location = new System.Drawing.Point(34, 54);
+            this.LabelServer.Location = new System.Drawing.Point(8, 75);
             this.LabelServer.Name = "LabelServer";
             this.LabelServer.Size = new System.Drawing.Size(50, 20);
             this.LabelServer.TabIndex = 5;
@@ -114,7 +108,7 @@ namespace InformSys1
             // 
             this.LabelPort.AutoSize = true;
             this.LabelPort.ForeColor = System.Drawing.Color.Black;
-            this.LabelPort.Location = new System.Drawing.Point(34, 133);
+            this.LabelPort.Location = new System.Drawing.Point(8, 128);
             this.LabelPort.Name = "LabelPort";
             this.LabelPort.Size = new System.Drawing.Size(35, 20);
             this.LabelPort.TabIndex = 7;
@@ -122,7 +116,7 @@ namespace InformSys1
             // 
             // PortTextBox
             // 
-            this.PortTextBox.Location = new System.Drawing.Point(34, 164);
+            this.PortTextBox.Location = new System.Drawing.Point(8, 151);
             this.PortTextBox.Name = "PortTextBox";
             this.PortTextBox.Size = new System.Drawing.Size(162, 27);
             this.PortTextBox.TabIndex = 6;
@@ -132,7 +126,7 @@ namespace InformSys1
             // 
             this.LabelPassword.AutoSize = true;
             this.LabelPassword.ForeColor = System.Drawing.Color.Black;
-            this.LabelPassword.Location = new System.Drawing.Point(34, 298);
+            this.LabelPassword.Location = new System.Drawing.Point(8, 234);
             this.LabelPassword.Name = "LabelPassword";
             this.LabelPassword.Size = new System.Drawing.Size(70, 20);
             this.LabelPassword.TabIndex = 11;
@@ -140,7 +134,7 @@ namespace InformSys1
             // 
             // PasswordTextBox
             // 
-            this.PasswordTextBox.Location = new System.Drawing.Point(34, 329);
+            this.PasswordTextBox.Location = new System.Drawing.Point(8, 257);
             this.PasswordTextBox.Name = "PasswordTextBox";
             this.PasswordTextBox.Size = new System.Drawing.Size(162, 27);
             this.PasswordTextBox.TabIndex = 10;
@@ -150,7 +144,7 @@ namespace InformSys1
             // 
             this.LabelUser.AutoSize = true;
             this.LabelUser.ForeColor = System.Drawing.Color.Black;
-            this.LabelUser.Location = new System.Drawing.Point(34, 219);
+            this.LabelUser.Location = new System.Drawing.Point(8, 181);
             this.LabelUser.Name = "LabelUser";
             this.LabelUser.Size = new System.Drawing.Size(38, 20);
             this.LabelUser.TabIndex = 9;
@@ -158,7 +152,7 @@ namespace InformSys1
             // 
             // UserTextBox
             // 
-            this.UserTextBox.Location = new System.Drawing.Point(34, 250);
+            this.UserTextBox.Location = new System.Drawing.Point(8, 204);
             this.UserTextBox.Name = "UserTextBox";
             this.UserTextBox.Size = new System.Drawing.Size(162, 27);
             this.UserTextBox.TabIndex = 8;
@@ -168,24 +162,26 @@ namespace InformSys1
             // 
             this.LabelDatabase.AutoSize = true;
             this.LabelDatabase.ForeColor = System.Drawing.Color.Black;
-            this.LabelDatabase.Location = new System.Drawing.Point(34, 384);
+            this.LabelDatabase.Location = new System.Drawing.Point(8, 287);
             this.LabelDatabase.Name = "LabelDatabase";
             this.LabelDatabase.Size = new System.Drawing.Size(72, 20);
             this.LabelDatabase.TabIndex = 13;
             this.LabelDatabase.Text = "Database";
+            this.LabelDatabase.Click += new System.EventHandler(this.LabelDatabase_Click);
             // 
             // DatabaseTextBox
             // 
-            this.DatabaseTextBox.Location = new System.Drawing.Point(34, 415);
+            this.DatabaseTextBox.Location = new System.Drawing.Point(8, 310);
             this.DatabaseTextBox.Name = "DatabaseTextBox";
             this.DatabaseTextBox.Size = new System.Drawing.Size(162, 27);
             this.DatabaseTextBox.TabIndex = 12;
             this.DatabaseTextBox.Text = "postgres";
+            this.DatabaseTextBox.TextChanged += new System.EventHandler(this.DatabaseTextBox_TextChanged);
             // 
             // ButtonInit
             // 
             this.ButtonInit.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.ButtonInit.Location = new System.Drawing.Point(34, 12);
+            this.ButtonInit.Location = new System.Drawing.Point(8, 356);
             this.ButtonInit.Name = "ButtonInit";
             this.ButtonInit.Size = new System.Drawing.Size(94, 29);
             this.ButtonInit.TabIndex = 15;
@@ -197,7 +193,7 @@ namespace InformSys1
             // 
             this.ButtonGetTable.Enabled = false;
             this.ButtonGetTable.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.ButtonGetTable.Location = new System.Drawing.Point(581, 457);
+            this.ButtonGetTable.Location = new System.Drawing.Point(873, 528);
             this.ButtonGetTable.Name = "ButtonGetTable";
             this.ButtonGetTable.Size = new System.Drawing.Size(101, 29);
             this.ButtonGetTable.TabIndex = 14;
@@ -209,7 +205,7 @@ namespace InformSys1
             // 
             this.ConnectionInfoLabel.AutoSize = true;
             this.ConnectionInfoLabel.ForeColor = System.Drawing.Color.Red;
-            this.ConnectionInfoLabel.Location = new System.Drawing.Point(875, 54);
+            this.ConnectionInfoLabel.Location = new System.Drawing.Point(8, 40);
             this.ConnectionInfoLabel.Name = "ConnectionInfoLabel";
             this.ConnectionInfoLabel.Size = new System.Drawing.Size(99, 20);
             this.ConnectionInfoLabel.TabIndex = 16;
@@ -217,7 +213,7 @@ namespace InformSys1
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(224, 45);
+            this.button1.Location = new System.Drawing.Point(192, 528);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(94, 29);
             this.button1.TabIndex = 17;
@@ -226,18 +222,46 @@ namespace InformSys1
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(346, 45);
+            this.button2.Location = new System.Drawing.Point(192, 493);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(94, 29);
             this.button2.TabIndex = 18;
             this.button2.Text = "Delete";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // dataGrid
+            // 
+            this.dataGrid.AllowUserToAddRows = false;
+            this.dataGrid.AllowUserToDeleteRows = false;
+            this.dataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGrid.BackgroundColor = System.Drawing.SystemColors.Menu;
+            this.dataGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGrid.Location = new System.Drawing.Point(192, 9);
+            this.dataGrid.Name = "dataGrid";
+            this.dataGrid.ReadOnly = true;
+            this.dataGrid.RowHeadersWidth = 51;
+            this.dataGrid.RowTemplate.Height = 29;
+            this.dataGrid.Size = new System.Drawing.Size(889, 449);
+            this.dataGrid.TabIndex = 19;
+            this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
+            // 
+            // listBox
+            // 
+            this.listBox.FormattingEnabled = true;
+            this.listBox.ItemHeight = 20;
+            this.listBox.Location = new System.Drawing.Point(13, 424);
+            this.listBox.Name = "listBox";
+            this.listBox.Size = new System.Drawing.Size(150, 104);
+            this.listBox.TabIndex = 20;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(988, 507);
+            this.ClientSize = new System.Drawing.Size(1093, 569);
+            this.Controls.Add(this.listBox);
+            this.Controls.Add(this.dataGrid);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.ConnectionInfoLabel);
@@ -254,13 +278,13 @@ namespace InformSys1
             this.Controls.Add(this.LabelServer);
             this.Controls.Add(this.ServerTextBox);
             this.Controls.Add(this.InitInfoLabel);
-            this.Controls.Add(this.TextInfo);
             this.Controls.Add(this.ButtonDisconnect);
             this.Controls.Add(this.ButtonConnect);
             this.ForeColor = System.Drawing.Color.Black;
             this.Name = "Form1";
             this.Text = "Disconnected";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -270,7 +294,6 @@ namespace InformSys1
 
         private System.Windows.Forms.Button ButtonConnect;
         private System.Windows.Forms.Button ButtonDisconnect;
-        private System.Windows.Forms.TextBox TextInfo;
         private System.Windows.Forms.Label InitInfoLabel;
         private System.Windows.Forms.TextBox ServerTextBox;
         private System.Windows.Forms.Label LabelServer;
@@ -287,6 +310,8 @@ namespace InformSys1
         private System.Windows.Forms.Label ConnectionInfoLabel;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.DataGridView dataGrid;
+        private System.Windows.Forms.ListBox listBox;
     }
 }
 

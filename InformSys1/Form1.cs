@@ -14,7 +14,7 @@ namespace InformSys1
     public partial class Form1 : Form
     {
         NpgsqlConnection db_connection;
-        string db_connection_string;//123
+        string db_connection_string;
 
         public Form1()
         {
@@ -44,7 +44,9 @@ namespace InformSys1
             ButtonDisconnect.Enabled = false;
             ButtonGetTable.Enabled = false;
 
-            TextInfo.Clear();
+            dataGrid.Rows.Clear();
+            dataGrid.Refresh();
+            //TextInfo.Clear();
             ConnectionInfoLabel.Text = "Disconnected";
             ConnectionInfoLabel.ForeColor = Color.Red;
         }
@@ -89,21 +91,53 @@ namespace InformSys1
             string table_name = "items";
             NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
             reader = db_command.ExecuteReader();
-            TextInfo.Clear();
+            dataGrid.Rows.Clear();
+            dataGrid.Refresh();
+            dataGrid.Columns.Add("column_id","id");
+            dataGrid.Columns.Add("column_type", "type");
+            dataGrid.Columns.Add("column_amount", "amount");
+            dataGrid.Columns.Add("column_price", "price");
+            dataGrid.Columns.Add("column_publisher", "publisher");
+            dataGrid.Columns.Add("column_date", "date");
+
+            //TextInfo.Clear();
             while (reader.Read())
             {
-                TextInfo.AppendText(
-                    string.Format(
-                    "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\r\n",
+                dataGrid.Rows.Add(
                     reader.GetInt32(0).ToString(),
                     reader.GetString(1).ToString(),
                     reader.GetInt32(2).ToString(),
                     reader.GetInt32(3).ToString(),
                     reader.GetString(4).ToString(),
                     reader.GetDate(5).ToString()
-                    ));
+                );   
+                //dataGrid.AppendText(
+                //    string.Format(
+                //    "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\r\n",
+                //    reader.GetInt32(0).ToString(),
+                //    reader.GetString(1).ToString(),
+                //    reader.GetInt32(2).ToString(),
+                //    reader.GetInt32(3).ToString(),
+                //    reader.GetString(4).ToString(),
+                //    reader.GetDate(5).ToString()
+                //    ));
             }
             reader.Close();
+        }
+
+        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void DatabaseTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LabelDatabase_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
