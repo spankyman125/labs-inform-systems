@@ -46,6 +46,8 @@ namespace InformSys1
             this.ButtonInit = new System.Windows.Forms.Button();
             this.ButtonGetTable = new System.Windows.Forms.Button();
             this.ConnectionInfoLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ButtonConnect
@@ -74,10 +76,10 @@ namespace InformSys1
             // 
             // TextInfo
             // 
-            this.TextInfo.Location = new System.Drawing.Point(236, 98);
+            this.TextInfo.Location = new System.Drawing.Point(224, 85);
             this.TextInfo.Multiline = true;
             this.TextInfo.Name = "TextInfo";
-            this.TextInfo.Size = new System.Drawing.Size(740, 342);
+            this.TextInfo.Size = new System.Drawing.Size(752, 357);
             this.TextInfo.TabIndex = 2;
             // 
             // InitInfoLabel
@@ -213,11 +215,31 @@ namespace InformSys1
             this.ConnectionInfoLabel.TabIndex = 16;
             this.ConnectionInfoLabel.Text = "Disconnected";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(224, 45);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(94, 29);
+            this.button1.TabIndex = 17;
+            this.button1.Text = "Insert";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(346, 45);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(94, 29);
+            this.button2.TabIndex = 18;
+            this.button2.Text = "Delete";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(988, 507);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.ConnectionInfoLabel);
             this.Controls.Add(this.ButtonInit);
             this.Controls.Add(this.ButtonGetTable);
@@ -263,6 +285,8 @@ namespace InformSys1
         private System.Windows.Forms.Button ButtonInit;
         private System.Windows.Forms.Button ButtonGetTable;
         private System.Windows.Forms.Label ConnectionInfoLabel;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }
 
