@@ -45,10 +45,11 @@ namespace InformSys1
             this.ButtonInit = new System.Windows.Forms.Button();
             this.ButtonGetTable = new System.Windows.Forms.Button();
             this.ConnectionInfoLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.button_Execute = new System.Windows.Forms.Button();
             this.dataGrid = new System.Windows.Forms.DataGridView();
-            this.listBox = new System.Windows.Forms.ListBox();
+            this.listBoxFunction = new System.Windows.Forms.ListBox();
+            this.labelSelectedFunction = new System.Windows.Forms.Label();
+            this.buttonView = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -211,23 +212,16 @@ namespace InformSys1
             this.ConnectionInfoLabel.TabIndex = 16;
             this.ConnectionInfoLabel.Text = "Disconnected";
             // 
-            // button1
+            // button_Execute
             // 
-            this.button1.Location = new System.Drawing.Point(192, 528);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(94, 29);
-            this.button1.TabIndex = 17;
-            this.button1.Text = "Insert";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(192, 493);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(94, 29);
-            this.button2.TabIndex = 18;
-            this.button2.Text = "Delete";
-            this.button2.UseVisualStyleBackColor = true;
+            this.button_Execute.Enabled = false;
+            this.button_Execute.Location = new System.Drawing.Point(12, 534);
+            this.button_Execute.Name = "button_Execute";
+            this.button_Execute.Size = new System.Drawing.Size(68, 29);
+            this.button_Execute.TabIndex = 17;
+            this.button_Execute.Text = "Execute";
+            this.button_Execute.UseVisualStyleBackColor = true;
+            this.button_Execute.Click += new System.EventHandler(this.button_Execute_Click);
             // 
             // dataGrid
             // 
@@ -246,24 +240,47 @@ namespace InformSys1
             this.dataGrid.TabIndex = 19;
             this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
             // 
-            // listBox
+            // listBoxFunction
             // 
-            this.listBox.FormattingEnabled = true;
-            this.listBox.ItemHeight = 20;
-            this.listBox.Location = new System.Drawing.Point(13, 424);
-            this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(150, 104);
-            this.listBox.TabIndex = 20;
+            this.listBoxFunction.FormattingEnabled = true;
+            this.listBoxFunction.ItemHeight = 20;
+            this.listBoxFunction.Location = new System.Drawing.Point(12, 424);
+            this.listBoxFunction.Name = "listBoxFunction";
+            this.listBoxFunction.Size = new System.Drawing.Size(158, 104);
+            this.listBoxFunction.TabIndex = 20;
+            this.listBoxFunction.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
+            // 
+            // labelSelectedFunction
+            // 
+            this.labelSelectedFunction.AutoSize = true;
+            this.labelSelectedFunction.ForeColor = System.Drawing.Color.Black;
+            this.labelSelectedFunction.Location = new System.Drawing.Point(12, 401);
+            this.labelSelectedFunction.Name = "labelSelectedFunction";
+            this.labelSelectedFunction.Size = new System.Drawing.Size(68, 20);
+            this.labelSelectedFunction.TabIndex = 21;
+            this.labelSelectedFunction.Text = "Function:";
+            // 
+            // buttonView
+            // 
+            this.buttonView.Enabled = false;
+            this.buttonView.Location = new System.Drawing.Point(97, 534);
+            this.buttonView.Name = "buttonView";
+            this.buttonView.Size = new System.Drawing.Size(73, 29);
+            this.buttonView.TabIndex = 22;
+            this.buttonView.Text = "View";
+            this.buttonView.UseVisualStyleBackColor = true;
+            this.buttonView.Click += new System.EventHandler(this.buttonViewClick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1093, 569);
-            this.Controls.Add(this.listBox);
+            this.Controls.Add(this.buttonView);
+            this.Controls.Add(this.labelSelectedFunction);
+            this.Controls.Add(this.listBoxFunction);
             this.Controls.Add(this.dataGrid);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button_Execute);
             this.Controls.Add(this.ConnectionInfoLabel);
             this.Controls.Add(this.ButtonInit);
             this.Controls.Add(this.ButtonGetTable);
@@ -282,7 +299,7 @@ namespace InformSys1
             this.Controls.Add(this.ButtonConnect);
             this.ForeColor = System.Drawing.Color.Black;
             this.Name = "Form1";
-            this.Text = "Disconnected";
+            this.Text = "Inform Sys";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             this.ResumeLayout(false);
@@ -308,10 +325,12 @@ namespace InformSys1
         private System.Windows.Forms.Button ButtonInit;
         private System.Windows.Forms.Button ButtonGetTable;
         private System.Windows.Forms.Label ConnectionInfoLabel;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button_Execute;
         private System.Windows.Forms.DataGridView dataGrid;
-        private System.Windows.Forms.ListBox listBox;
+        private System.Windows.Forms.ListBox listBoxFunction;
+        private System.Windows.Forms.Label labelSelectedFunction;
+        private System.Windows.Forms.Button buttonView;
+        private System.Windows.Forms.Button buttonExecute;
     }
 }
 

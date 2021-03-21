@@ -28,13 +28,22 @@ namespace InformSys1
 
         private void Connect_Click(object sender, EventArgs e)
         {
-        db_connection.Open();
-        ButtonConnect.Enabled = false;
-        ButtonDisconnect.Enabled = true;
-        ButtonGetTable.Enabled = true;
-            
-        ConnectionInfoLabel.Text = "Connected";
-        ConnectionInfoLabel.ForeColor = Color.Green;
+            db_connection.Open();
+            ButtonConnect.Enabled = false;
+            ButtonDisconnect.Enabled = true;
+            ButtonGetTable.Enabled = true;
+            buttonView.Enabled = true;
+            button_Execute.Enabled = true;
+
+            ConnectionInfoLabel.Text = "Connected";
+            ConnectionInfoLabel.ForeColor = Color.Green;
+            initListBox();
+        }
+
+        private void initListBox()
+        {
+            listBoxFunction.Items.Add("add");
+            listBoxFunction.Items.Add("delete");
         }
 
         private void Disconnect_click(object sender, EventArgs e)
@@ -43,22 +52,26 @@ namespace InformSys1
             ButtonConnect.Enabled = true;
             ButtonDisconnect.Enabled = false;
             ButtonGetTable.Enabled = false;
+            buttonView.Enabled = false;
+            button_Execute.Enabled = true;
 
+            dataGrid.Columns.Clear();
             dataGrid.Rows.Clear();
             dataGrid.Refresh();
-            //TextInfo.Clear();
+
             ConnectionInfoLabel.Text = "Disconnected";
             ConnectionInfoLabel.ForeColor = Color.Red;
+            listBoxFunction.Items.Clear();
         }
 
         private void ButtonInit_Click(object sender, EventArgs e)
         {
             db_connection_string =
-            "Server=" + ServerTextBox.Text + ";" +
-            "Port="+ PortTextBox.Text + ";" +
-            "User Id=" + UserTextBox.Text + ";" +
-            "Password=" + PasswordTextBox.Text +";" +
-            "Database=" + DatabaseTextBox.Text + ";";
+                "Server="   + ServerTextBox.Text    + ";" +
+                "Port="     + PortTextBox.Text      + ";" +
+                "User Id="  + UserTextBox.Text      + ";" +
+                "Password=" + PasswordTextBox.Text  + ";" +
+                "Database=" + DatabaseTextBox.Text  + ";";
 
             try
             {
@@ -87,20 +100,21 @@ namespace InformSys1
 
         private void ButtonGetTable_Click(object sender, EventArgs e)
         {
+            dataGrid.Rows.Clear();
+            dataGrid.Columns.Clear();
+            dataGrid.Refresh();
             NpgsqlDataReader reader;
             string table_name = "items";
             NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
             reader = db_command.ExecuteReader();
             dataGrid.Rows.Clear();
             dataGrid.Refresh();
-            dataGrid.Columns.Add("column_id","id");
-            dataGrid.Columns.Add("column_type", "type");
-            dataGrid.Columns.Add("column_amount", "amount");
-            dataGrid.Columns.Add("column_price", "price");
-            dataGrid.Columns.Add("column_publisher", "publisher");
-            dataGrid.Columns.Add("column_date", "date");
+            string[] column_names = { "id", "type", "amount", "price", "publisher", "date" };
+            for (int i = 0; i < 6; i++)
+            {
+                dataGrid.Columns.Add("column_" + column_names[i], column_names[i]);
+            }
 
-            //TextInfo.Clear();
             while (reader.Read())
             {
                 dataGrid.Rows.Add(
@@ -111,16 +125,6 @@ namespace InformSys1
                     reader.GetString(4).ToString(),
                     reader.GetDate(5).ToString()
                 );   
-                //dataGrid.AppendText(
-                //    string.Format(
-                //    "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\r\n",
-                //    reader.GetInt32(0).ToString(),
-                //    reader.GetString(1).ToString(),
-                //    reader.GetInt32(2).ToString(),
-                //    reader.GetInt32(3).ToString(),
-                //    reader.GetString(4).ToString(),
-                //    reader.GetDate(5).ToString()
-                //    ));
             }
             reader.Close();
         }
@@ -139,5 +143,96 @@ namespace InformSys1
         {
 
         }
+
+        private void listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selected_str = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
+            labelSelectedFunction.Text = "Function:" + selected_str;
+        }
+
+        private void button_Execute_Click(object sender, EventArgs e)
+        {
+           string funcName = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
+            Form dialog = new Form();
+            
+            switch (funcName)
+            {
+                case "add":
+                    TextBox[] textBoxes = new TextBox[6];
+                    Label[] labels = new Label[6];
+                    string[] arg_names = { "id", "type", "amount", "price", "publisher", "date" };
+                    for (int i = 0; i < 6; i++)
+                    {
+                        labels[i] = new Label() { Left = 0, Top = 35*i, Text = arg_names[i]};
+                        textBoxes[i] = new TextBox() { Left = 150, Top = 35*i };
+                    }
+                    for (int i = 0; i < 6; i++)
+                    {
+                        dialog.Controls.Add(labels[i]);
+                        dialog.Controls.Add(textBoxes[i]);
+                    }
+                    Button add_button = new Button() { Left = 150, Top = 6*35, Text = "Add Row" };
+
+                    dialog.Controls.Add(add_button);
+
+                    add_button.Click += (s, e) => {
+                        using (var add_command = new NpgsqlCommand("select add(@0,@1,@2,@3,@4,@5)", db_connection))
+                        {
+                            add_command.Parameters.AddWithValue("0",Int32.Parse(textBoxes[0].Text));
+                            add_command.Parameters.AddWithValue("1", textBoxes[1].Text);
+                            add_command.Parameters.AddWithValue("2", Int32.Parse(textBoxes[2].Text));
+                            add_command.Parameters.AddWithValue("3", Int32.Parse(textBoxes[3].Text));
+                            add_command.Parameters.AddWithValue("4", textBoxes[4].Text);
+                            NpgsqlTypes.NpgsqlDate datesql = new NpgsqlTypes.NpgsqlDate(DateTime.Parse(textBoxes[5].Text));
+                            add_command.Parameters.AddWithValue("5", datesql);
+                            add_command.ExecuteNonQuery();
+                        }
+                    };
+                    dialog.ShowDialog();
+                    break;
+
+                case "delete":
+                    Label label_id = new Label() { Left = 0, Top = 35, Text = "id"};
+                    TextBox textBox_id = new TextBox() { Left = 100, Top = 35 };
+                    Button ok_button = new Button() { Left = 0, Top = 90, Text="ok", Height=35 };
+                    ok_button.Click += (s, e) =>
+                    {
+                        using (var delete_command = new NpgsqlCommand("select delete(@0)", db_connection))
+                        {
+
+                            delete_command.Parameters.AddWithValue("0", Int32.Parse(textBox_id.Text));
+                            delete_command.ExecuteNonQuery();
+                        }
+                    };
+                    dialog.Controls.Add(label_id);
+                    dialog.Controls.Add(textBox_id);
+                    dialog.Controls.Add(ok_button);
+                    dialog.ShowDialog();
+                    break;
+            }
+        }
+
+        private void buttonViewClick(object sender, EventArgs e)
+        {
+            string funcName = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
+            Form dialog = new Form() { Height = 500, Width = 600 };
+            RichTextBox functionCode = new RichTextBox() { Height = 500, Width = 600, ReadOnly = true };
+            using (var codeShow_command = new NpgsqlCommand("select prosrc from pg_proc where proname=@0;", db_connection))
+            {
+                codeShow_command.Parameters.AddWithValue("0", funcName);
+                NpgsqlDataReader code_reader;
+                code_reader = codeShow_command.ExecuteReader();
+                while (code_reader.Read())
+                {
+                    functionCode.Text += code_reader.GetString(0);
+                }
+                code_reader.Close();
+                codeShow_command.ExecuteNonQuery();
+            }
+            dialog.Controls.Add(functionCode);
+            dialog.ShowDialog();
+            
+        }
+
     }
 }
