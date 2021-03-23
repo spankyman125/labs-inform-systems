@@ -100,8 +100,8 @@ namespace InformSys1
 
         private void ButtonGetTable_Click(object sender, EventArgs e)
         {
-            dataGrid.Rows.Clear();
-            dataGrid.Columns.Clear();
+            //dataGrid.Rows.Clear();
+            //dataGrid.Columns.Clear();
             dataGrid.Refresh();
             string table_name = "items";
             NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
