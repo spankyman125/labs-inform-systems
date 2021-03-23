@@ -103,30 +103,12 @@ namespace InformSys1
             dataGrid.Rows.Clear();
             dataGrid.Columns.Clear();
             dataGrid.Refresh();
-            NpgsqlDataReader reader;
             string table_name = "items";
             NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
-            reader = db_command.ExecuteReader();
-            dataGrid.Rows.Clear();
-            dataGrid.Refresh();
-            string[] column_names = { "id", "type", "amount", "price", "publisher", "date" };
-            for (int i = 0; i < 6; i++)
-            {
-                dataGrid.Columns.Add("column_" + column_names[i], column_names[i]);
-            }
-
-            while (reader.Read())
-            {
-                dataGrid.Rows.Add(
-                    reader.GetInt32(0).ToString(),
-                    reader.GetString(1).ToString(),
-                    reader.GetInt32(2).ToString(),
-                    reader.GetInt32(3).ToString(),
-                    reader.GetString(4).ToString(),
-                    reader.GetDate(5).ToString()
-                );   
-            }
-            reader.Close();
+            NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(db_command);
+            DataSet dataset = new DataSet();
+            dataAdapter.Fill(dataset,table_name);
+            dataGrid.DataSource = dataset.Tables[table_name];
         }
 
         private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -194,7 +176,7 @@ namespace InformSys1
                 case "delete":
                     Label label_id = new Label() { Left = 0, Top = 35, Text = "id"};
                     TextBox textBox_id = new TextBox() { Left = 100, Top = 35 };
-                    Button ok_button = new Button() { Left = 0, Top = 90, Text="ok", Height=35 };
+                    Button ok_button = new Button() { Left = 0, Top = 90, Text="delete", Height=35 };
                     ok_button.Click += (s, e) =>
                     {
                         using (var delete_command = new NpgsqlCommand("select delete(@0)", db_connection))
