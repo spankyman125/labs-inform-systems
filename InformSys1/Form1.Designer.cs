@@ -50,6 +50,7 @@ namespace InformSys1
             this.listBoxFunction = new System.Windows.Forms.ListBox();
             this.labelSelectedFunction = new System.Windows.Forms.Label();
             this.buttonView = new System.Windows.Forms.Button();
+            this.buttonSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -94,6 +95,7 @@ namespace InformSys1
             this.ServerTextBox.Size = new System.Drawing.Size(162, 27);
             this.ServerTextBox.TabIndex = 4;
             this.ServerTextBox.Text = "localhost";
+            this.ServerTextBox.TextChanged += new System.EventHandler(this.ServerTextBox_TextChanged);
             // 
             // LabelServer
             // 
@@ -233,12 +235,12 @@ namespace InformSys1
             this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGrid.Location = new System.Drawing.Point(192, 9);
             this.dataGrid.Name = "dataGrid";
-            this.dataGrid.ReadOnly = true;
             this.dataGrid.RowHeadersWidth = 51;
             this.dataGrid.RowTemplate.Height = 29;
             this.dataGrid.Size = new System.Drawing.Size(889, 449);
             this.dataGrid.TabIndex = 19;
             this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
+            this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellEndEdit);
             // 
             // listBoxFunction
             // 
@@ -271,11 +273,22 @@ namespace InformSys1
             this.buttonView.UseVisualStyleBackColor = true;
             this.buttonView.Click += new System.EventHandler(this.buttonViewClick);
             // 
+            // buttonSave
+            // 
+            this.buttonSave.Location = new System.Drawing.Point(873, 493);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(101, 29);
+            this.buttonSave.TabIndex = 23;
+            this.buttonSave.Text = "Save";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1093, 569);
+            this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonView);
             this.Controls.Add(this.labelSelectedFunction);
             this.Controls.Add(this.listBoxFunction);
@@ -331,6 +344,7 @@ namespace InformSys1
         private System.Windows.Forms.Label labelSelectedFunction;
         private System.Windows.Forms.Button buttonView;
         private System.Windows.Forms.Button buttonExecute;
+        private System.Windows.Forms.Button buttonSave;
     }
 }
 
