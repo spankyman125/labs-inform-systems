@@ -16,7 +16,9 @@ namespace InformSys1
         NpgsqlConnection db_connection;
         string db_connection_string;
         DataSet dataset = new DataSet();
-        HashSet<DataRow> rows_changed= new HashSet<DataRow>();
+        HashSet<DataGridViewRow> rows_changed= new HashSet<DataGridViewRow>();
+        NpgsqlConnectionStringBuilder builder;
+ 
         public Form1()
         {
             InitializeComponent();
@@ -32,16 +34,49 @@ namespace InformSys1
             db_connection.Open();
             ButtonConnect.Enabled = false;
             ButtonDisconnect.Enabled = true;
-            ButtonGetTable.Enabled = true;
+            //ButtonGetTable.Enabled = true;
             buttonView.Enabled = true;
             button_Execute.Enabled = true;
 
             ConnectionInfoLabel.Text = "Connected";
             ConnectionInfoLabel.ForeColor = Color.Green;
-            initListBox();
+
+            InitTreeView();
+            InitListBox();
         }
 
-        private void initListBox()
+        private void InitTreeView()
+        {
+            NpgsqlCommand db_command = new NpgsqlCommand("SELECT datname From pg_database WHERE datistemplate=false;", db_connection);
+            NpgsqlDataReader reader = db_command.ExecuteReader();
+            List<string> databases = new List<string>();
+            while (reader.Read())
+            {
+                databases.Add(reader.GetString(0));
+            }
+            reader.Close();
+            for (int i = 0; i < databases.Count(); i++)
+            {
+                db_connection.Close();
+                builder.Database = databases[i];
+                db_connection_string = builder.ConnectionString;
+                db_connection = new(db_connection_string);
+                db_connection.Open();
+                db_command = new NpgsqlCommand("SELECT table_name FROM information_schema.tables  WHERE table_schema='public';", db_connection);
+                reader = db_command.ExecuteReader();
+                List<string> datatables = new List<string>();
+                treeView.Nodes.Add(new TreeNode(databases[i]));
+                while (reader.Read())
+                {
+                    datatables.Add(reader.GetString(0));
+                    treeView.Nodes[i].Nodes.Add(new TreeNode(datatables.Last()));
+                }
+                reader.Close();
+
+            }
+        }
+
+        private void InitListBox()
         {
             listBoxFunction.Items.Add("add");
             listBoxFunction.Items.Add("delete");
@@ -54,26 +89,39 @@ namespace InformSys1
             ButtonDisconnect.Enabled = false;
             ButtonGetTable.Enabled = false;
             buttonView.Enabled = false;
+            buttonSave.Enabled = false;
             button_Execute.Enabled = true;
+            DataGridClear();
 
-            dataGrid.Columns.Clear();
-            dataGrid.Rows.Clear();
-            dataGrid.Refresh();
 
             ConnectionInfoLabel.Text = "Disconnected";
             ConnectionInfoLabel.ForeColor = Color.Red;
             listBoxFunction.Items.Clear();
+            treeView.Nodes.Clear();
+        }
+
+        private void DataGridClear()
+        {
+            DataTable DT = (DataTable)dataGrid.DataSource;
+            if (DT != null)
+            {
+                DT.Rows.Clear();
+                DT.Columns.Clear();
+            }
+            dataGrid.Refresh();
         }
 
         private void ButtonInit_Click(object sender, EventArgs e)
         {
-            db_connection_string =
-                "Server="   + ServerTextBox.Text    + ";" +
-                "Port="     + PortTextBox.Text      + ";" +
-                "User Id="  + UserTextBox.Text      + ";" +
-                "Password=" + PasswordTextBox.Text  + ";" +
-                "Database=" + DatabaseTextBox.Text  + ";";
-
+            builder = new NpgsqlConnectionStringBuilder()
+            {
+                Host = ServerTextBox.Text,
+                Port = Int32.Parse(PortTextBox.Text),
+                Username = UserTextBox.Text,
+                Password = PasswordTextBox.Text,
+                Database = DatabaseTextBox.Text
+            };
+            db_connection_string = builder.ConnectionString;
             try
             {
                 db_connection = new(db_connection_string);
@@ -91,6 +139,13 @@ namespace InformSys1
                 ButtonInit.Enabled = false;
                 ButtonConnect.Enabled = true;
                 ButtonDisconnect.Enabled = false;
+
+                ServerTextBox.Enabled = false;
+                PortTextBox.Enabled = false;
+                UserTextBox.Enabled = false;
+                PasswordTextBox.Enabled = false;
+                DatabaseTextBox.Enabled = false;
+
             }
             else
             {
@@ -101,40 +156,37 @@ namespace InformSys1
 
         private void ButtonGetTable_Click(object sender, EventArgs e)
         {
-            DataTable DT = (DataTable)dataGrid.DataSource;
-            if (DT != null)
-                DT.Rows.Clear();
-            dataGrid.Refresh();
-            string table_name = "items";
-            NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
-            NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(db_command);
-            
-            dataAdapter.Fill(dataset,table_name);
-            dataGrid.DataSource = dataset.Tables[table_name];
+            getTable();
         }
 
-        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void getTable()
         {
+            if (treeView.SelectedNode != null) 
+            {
+                rows_changed.Clear();
+                DataGridClear();
+                builder.Database = treeView.SelectedNode.Parent.Text;
+                db_connection_string = builder.ConnectionString;
+
+                db_connection.Close();
+                db_connection = new(db_connection_string);
+                db_connection.Open();
+                string table_name = treeView.SelectedNode.Text;
+                NpgsqlCommand db_command = new("select *from " + table_name, db_connection);
+                NpgsqlDataAdapter dataAdapter = new(db_command);
+                dataAdapter.Fill(dataset, table_name);
+                dataGrid.DataSource = dataset.Tables[table_name];
+            }
 
         }
 
-        private void DatabaseTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void LabelDatabase_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selected_str = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
             labelSelectedFunction.Text = "Function:" + selected_str;
         }
 
-        private void button_Execute_Click(object sender, EventArgs e)
+        private void Button_Execute_Click(object sender, EventArgs e)
         {
            string funcName = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
             Form dialog = new Form();
@@ -196,11 +248,11 @@ namespace InformSys1
             }
         }
 
-        private void buttonViewClick(object sender, EventArgs e)
+        private void ButtonViewClick(object sender, EventArgs e)
         {
             string funcName = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
-            Form dialog = new Form() { Height = 500, Width = 600 };
-            RichTextBox functionCode = new RichTextBox() { Height = 500, Width = 600, ReadOnly = true };
+            Form dialog = new() { Height = 500, Width = 600 };
+            RichTextBox functionCode = new() { Height = 500, Width = 600, ReadOnly = true };
             using (var codeShow_command = new NpgsqlCommand("select prosrc from pg_proc where proname=@0;", db_connection))
             {
                 codeShow_command.Parameters.AddWithValue("0", funcName);
@@ -218,41 +270,80 @@ namespace InformSys1
             
         }
 
-        private void buttonSave_Click(object sender, EventArgs e)
+        private void ButtonSave_Click(object sender, EventArgs e)
         {
-            Form updateInfo = new Form() { Text="Confirm changes",Height = 400, Width = 900};
+            Form updateInfo = new Form() { Text="Confirm changes",Height = 400, Width = 920};
             DataTable table = ((DataTable)dataGrid.DataSource).Clone();
-            foreach (DataRow row in rows_changed)
+            Button confirmButton = new Button() { Text="Confirm", Left = 10,Top = 315, Height = 30 };
+            Button cancelButton = new Button() { Text = "Cancel" , Left = 90, Top = 315, Height = 30 };
+
+            foreach (DataGridViewRow row in rows_changed)
             {
                 DataRow newRow = table.NewRow();
-                newRow.ItemArray = row.ItemArray;
+                DataRow oldRow = ((DataRowView)row.DataBoundItem).Row;
+                newRow.ItemArray = oldRow.ItemArray;
                 table.Rows.Add(newRow);
             }
-            DataGridView changedRowsList = new DataGridView() { Height = 400, Width = 900, BackgroundColor=Color.White, AutoSizeColumnsMode= DataGridViewAutoSizeColumnsMode.Fill };
+            DataGridView changedRowsList = new() { Height = 300, Width = 900, BackgroundColor=Color.White, 
+                                                                AutoSizeColumnsMode= DataGridViewAutoSizeColumnsMode.Fill };
             changedRowsList.DataSource = table;
             changedRowsList.ReadOnly = true;
+            confirmButton.Click += (s, e) =>
+            {
+                string table_name = treeView.SelectedNode.Text;
+                NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
+                NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(db_command);
+                NpgsqlCommandBuilder commandBuilder = new NpgsqlCommandBuilder(dataAdapter);
+                try
+                {
+                    dataAdapter.Update(dataset, table_name);
+                    updateInfo.Close();
+                    getTable();
+                }
+                catch
+                {
+                    MessageBox.Show("Wrong data","Error");
+                }
+                
+            };
+            cancelButton.Click += (s, e) =>
+              {
+                  updateInfo.Close();
+              };
             updateInfo.Controls.Add(changedRowsList);
+            updateInfo.Controls.Add(confirmButton);
+            updateInfo.Controls.Add(cancelButton);
+
             updateInfo.ShowDialog();
-            
-            //string table_name = "items";
-            //NpgsqlCommand db_command = new NpgsqlCommand("select *from " + table_name, db_connection);
-            //NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(db_command);
-            //NpgsqlCommandBuilder commandBuilder = new NpgsqlCommandBuilder(dataAdapter);
-            //dataAdapter.Update(dataset,table_name);
-            //dataGrid.Refresh();
+
+
         }
 
-        private void dataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DataGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             int rowIndex = e.RowIndex;
             int colIndex = e.ColumnIndex;
-            
+            buttonSave.Enabled = true;
             dataGrid.Rows[rowIndex].Cells[colIndex].Style.BackColor =Color.LightSkyBlue;
-            
-            rows_changed.Add(dataset.Tables[0].Rows[rowIndex]);
+            rows_changed.Add(dataGrid.Rows[rowIndex]);
         }
 
-        private void ServerTextBox_TextChanged(object sender, EventArgs e)
+        private void TreeViewItemSelected(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Level == 0)
+            {
+                treeView.SelectedNode = null;
+            }
+            else
+                ButtonGetTable.Enabled = true;
+        }
+
+        private void TreeViewDoubleClick(object sender, EventArgs e)
+        {
+            getTable();
+        }
+
+        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

@@ -51,6 +51,7 @@ namespace InformSys1
             this.labelSelectedFunction = new System.Windows.Forms.Label();
             this.buttonView = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
+            this.treeView = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -95,7 +96,6 @@ namespace InformSys1
             this.ServerTextBox.Size = new System.Drawing.Size(162, 27);
             this.ServerTextBox.TabIndex = 4;
             this.ServerTextBox.Text = "localhost";
-            this.ServerTextBox.TextChanged += new System.EventHandler(this.ServerTextBox_TextChanged);
             // 
             // LabelServer
             // 
@@ -170,7 +170,6 @@ namespace InformSys1
             this.LabelDatabase.Size = new System.Drawing.Size(72, 20);
             this.LabelDatabase.TabIndex = 13;
             this.LabelDatabase.Text = "Database";
-            this.LabelDatabase.Click += new System.EventHandler(this.LabelDatabase_Click);
             // 
             // DatabaseTextBox
             // 
@@ -179,7 +178,6 @@ namespace InformSys1
             this.DatabaseTextBox.Size = new System.Drawing.Size(162, 27);
             this.DatabaseTextBox.TabIndex = 12;
             this.DatabaseTextBox.Text = "postgres";
-            this.DatabaseTextBox.TextChanged += new System.EventHandler(this.DatabaseTextBox_TextChanged);
             // 
             // ButtonInit
             // 
@@ -223,12 +221,10 @@ namespace InformSys1
             this.button_Execute.TabIndex = 17;
             this.button_Execute.Text = "Execute";
             this.button_Execute.UseVisualStyleBackColor = true;
-            this.button_Execute.Click += new System.EventHandler(this.button_Execute_Click);
+            this.button_Execute.Click += new System.EventHandler(this.Button_Execute_Click);
             // 
             // dataGrid
             // 
-            this.dataGrid.AllowUserToAddRows = false;
-            this.dataGrid.AllowUserToDeleteRows = false;
             this.dataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGrid.BackgroundColor = System.Drawing.SystemColors.Menu;
             this.dataGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -237,10 +233,10 @@ namespace InformSys1
             this.dataGrid.Name = "dataGrid";
             this.dataGrid.RowHeadersWidth = 51;
             this.dataGrid.RowTemplate.Height = 29;
-            this.dataGrid.Size = new System.Drawing.Size(889, 449);
+            this.dataGrid.Size = new System.Drawing.Size(889, 466);
             this.dataGrid.TabIndex = 19;
             this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
-            this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellEndEdit);
+            this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGrid_CellEndEdit);
             // 
             // listBoxFunction
             // 
@@ -250,7 +246,7 @@ namespace InformSys1
             this.listBoxFunction.Name = "listBoxFunction";
             this.listBoxFunction.Size = new System.Drawing.Size(158, 104);
             this.listBoxFunction.TabIndex = 20;
-            this.listBoxFunction.SelectedIndexChanged += new System.EventHandler(this.listBox_SelectedIndexChanged);
+            this.listBoxFunction.SelectedIndexChanged += new System.EventHandler(this.ListBox_SelectedIndexChanged);
             // 
             // labelSelectedFunction
             // 
@@ -271,23 +267,35 @@ namespace InformSys1
             this.buttonView.TabIndex = 22;
             this.buttonView.Text = "View";
             this.buttonView.UseVisualStyleBackColor = true;
-            this.buttonView.Click += new System.EventHandler(this.buttonViewClick);
+            this.buttonView.Click += new System.EventHandler(this.ButtonViewClick);
             // 
             // buttonSave
             // 
+            this.buttonSave.Enabled = false;
+            this.buttonSave.ForeColor = System.Drawing.Color.RoyalBlue;
             this.buttonSave.Location = new System.Drawing.Point(873, 493);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(101, 29);
             this.buttonSave.TabIndex = 23;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += new System.EventHandler(this.ButtonSave_Click);
+            // 
+            // treeView
+            // 
+            this.treeView.Location = new System.Drawing.Point(1101, 9);
+            this.treeView.Name = "treeView";
+            this.treeView.Size = new System.Drawing.Size(201, 554);
+            this.treeView.TabIndex = 24;
+            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewItemSelected);
+            this.treeView.DoubleClick += new System.EventHandler(this.TreeViewDoubleClick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1093, 569);
+            this.ClientSize = new System.Drawing.Size(1314, 569);
+            this.Controls.Add(this.treeView);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonView);
             this.Controls.Add(this.labelSelectedFunction);
@@ -345,6 +353,7 @@ namespace InformSys1
         private System.Windows.Forms.Button buttonView;
         private System.Windows.Forms.Button buttonExecute;
         private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.TreeView treeView;
     }
 }
 
