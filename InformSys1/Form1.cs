@@ -47,39 +47,19 @@ namespace InformSys1
 
         private void InitTreeView()
         {
-            NpgsqlCommand db_command = new NpgsqlCommand("SELECT datname From pg_database WHERE datistemplate=false;", db_connection);
+            NpgsqlCommand db_command = new NpgsqlCommand("SELECT table_name FROM information_schema.tables  WHERE table_schema='public';", db_connection);
             NpgsqlDataReader reader = db_command.ExecuteReader();
-            List<string> databases = new List<string>();
             while (reader.Read())
-            {
-                databases.Add(reader.GetString(0));
-            }
+                treeView.Nodes.Add(reader.GetString(0));
             reader.Close();
-            for (int i = 0; i < databases.Count(); i++)
-            {
-                db_connection.Close();
-                builder.Database = databases[i];
-                db_connection_string = builder.ConnectionString;
-                db_connection = new(db_connection_string);
-                db_connection.Open();
-                db_command = new NpgsqlCommand("SELECT table_name FROM information_schema.tables  WHERE table_schema='public';", db_connection);
-                reader = db_command.ExecuteReader();
-                List<string> datatables = new List<string>();
-                treeView.Nodes.Add(new TreeNode(databases[i]));
-                while (reader.Read())
-                {
-                    datatables.Add(reader.GetString(0));
-                    treeView.Nodes[i].Nodes.Add(new TreeNode(datatables.Last()));
-                }
-                reader.Close();
-
-            }
         }
 
         private void InitListBox()
         {
-            listBoxFunction.Items.Add("add");
-            listBoxFunction.Items.Add("delete");
+            comboBox1.Items.Add("Список преподавателей кафедры");
+            comboBox1.Items.Add("Название кафедры преподавателя и сведения");
+            comboBox1.Items.Add("Список дисциплин кафедры");
+            comboBox1.Items.Add("Список кафедр");
         }
 
         private void Disconnect_click(object sender, EventArgs e)
@@ -88,7 +68,6 @@ namespace InformSys1
             ButtonConnect.Enabled = true;
             ButtonDisconnect.Enabled = false;
             ButtonGetTable.Enabled = false;
-            buttonView.Enabled = false;
             buttonSave.Enabled = false;
             button_Execute.Enabled = true;
             DataGridClear();
@@ -96,7 +75,7 @@ namespace InformSys1
 
             ConnectionInfoLabel.Text = "Disconnected";
             ConnectionInfoLabel.ForeColor = Color.Red;
-            listBoxFunction.Items.Clear();
+            comboBox1.Items.Clear();
             treeView.Nodes.Clear();
         }
 
@@ -165,7 +144,7 @@ namespace InformSys1
             {
                 rows_changed.Clear();
                 DataGridClear();
-                builder.Database = treeView.SelectedNode.Parent.Text;
+                //builder.Database = treeView.SelectedNode.Parent.Text;
                 db_connection_string = builder.ConnectionString;
 
                 db_connection.Close();
@@ -180,95 +159,37 @@ namespace InformSys1
 
         }
 
-        private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string selected_str = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
-            labelSelectedFunction.Text = "Function:" + selected_str;
-        }
-
         private void Button_Execute_Click(object sender, EventArgs e)
         {
-           string funcName = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
-            Form dialog = new Form();
-            
+           string funcName = comboBox1.GetItemText(comboBox1.SelectedItem);
+           NpgsqlCommand command = null;
+
             switch (funcName)
             {
-                case "add":
-                    TextBox[] textBoxes = new TextBox[6];
-                    Label[] labels = new Label[6];
-                    string[] arg_names = { "id", "type", "amount", "price", "publisher", "date" };
-                    for (int i = 0; i < 6; i++)
-                    {
-                        labels[i] = new Label() { Left = 0, Top = 35*i, Text = arg_names[i]};
-                        textBoxes[i] = new TextBox() { Left = 150, Top = 35*i };
-                    }
-                    for (int i = 0; i < 6; i++)
-                    {
-                        dialog.Controls.Add(labels[i]);
-                        dialog.Controls.Add(textBoxes[i]);
-                    }
-                    Button add_button = new Button() { Left = 150, Top = 6*35, Text = "Add Row" };
-
-                    dialog.Controls.Add(add_button);
-
-                    add_button.Click += (s, e) => {
-                        using (var add_command = new NpgsqlCommand("select add(@0,@1,@2,@3,@4,@5)", db_connection))
-                        {
-                            add_command.Parameters.AddWithValue("0",Int32.Parse(textBoxes[0].Text));
-                            add_command.Parameters.AddWithValue("1", textBoxes[1].Text);
-                            add_command.Parameters.AddWithValue("2", Int32.Parse(textBoxes[2].Text));
-                            add_command.Parameters.AddWithValue("3", Int32.Parse(textBoxes[3].Text));
-                            add_command.Parameters.AddWithValue("4", textBoxes[4].Text);
-                            NpgsqlTypes.NpgsqlDate datesql = new NpgsqlTypes.NpgsqlDate(DateTime.Parse(textBoxes[5].Text));
-                            add_command.Parameters.AddWithValue("5", datesql);
-                            add_command.ExecuteNonQuery();
-                        }
-                    };
-                    dialog.ShowDialog();
+                case "Список преподавателей кафедры":
+                    command = new NpgsqlCommand("select getEducators(@0)", db_connection);
+                    command.Parameters.AddWithValue("0", ParamTextBox.Text);
                     break;
 
-                case "delete":
-                    Label label_id = new Label() { Left = 0, Top = 35, Text = "id"};
-                    TextBox textBox_id = new TextBox() { Left = 100, Top = 35 };
-                    Button ok_button = new Button() { Left = 0, Top = 90, Text="delete", Height=35 };
-                    ok_button.Click += (s, e) =>
-                    {
-                        using (var delete_command = new NpgsqlCommand("select delete(@0)", db_connection))
-                        {
-
-                            delete_command.Parameters.AddWithValue("0", Int32.Parse(textBox_id.Text));
-                            delete_command.ExecuteNonQuery();
-                        }
-                    };
-                    dialog.Controls.Add(label_id);
-                    dialog.Controls.Add(textBox_id);
-                    dialog.Controls.Add(ok_button);
-                    dialog.ShowDialog();
+                case "Название кафедры преподавателя и сведения":
+                    command = new NpgsqlCommand("select getDepartment(@0)", db_connection);
+                    command.Parameters.AddWithValue("0", ParamTextBox.Text);
                     break;
+
+                case "Список дисциплин кафедры":
+                    command = new NpgsqlCommand("select getDisciplines(@0)", db_connection);
+                    command.Parameters.AddWithValue("0", ParamTextBox.Text);
+                    break;
+
+                case "Список кафедр":
+                    command = new NpgsqlCommand("select getDepartmentsAll()", db_connection);
+                    break;
+
+
             }
+            command.ExecuteNonQuery();
         }
 
-        private void ButtonViewClick(object sender, EventArgs e)
-        {
-            string funcName = listBoxFunction.GetItemText(listBoxFunction.SelectedItem);
-            Form dialog = new() { Height = 500, Width = 600 };
-            RichTextBox functionCode = new() { Height = 500, Width = 600, ReadOnly = true };
-            using (var codeShow_command = new NpgsqlCommand("select prosrc from pg_proc where proname=@0;", db_connection))
-            {
-                codeShow_command.Parameters.AddWithValue("0", funcName);
-                NpgsqlDataReader code_reader;
-                code_reader = codeShow_command.ExecuteReader();
-                while (code_reader.Read())
-                {
-                    functionCode.Text += code_reader.GetString(0);
-                }
-                code_reader.Close();
-                codeShow_command.ExecuteNonQuery();
-            }
-            dialog.Controls.Add(functionCode);
-            dialog.ShowDialog();
-            
-        }
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
@@ -330,12 +251,7 @@ namespace InformSys1
 
         private void TreeViewItemSelected(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Level == 0)
-            {
-                treeView.SelectedNode = null;
-            }
-            else
-                ButtonGetTable.Enabled = true;
+            ButtonGetTable.Enabled = true;
         }
 
         private void TreeViewDoubleClick(object sender, EventArgs e)
@@ -344,6 +260,16 @@ namespace InformSys1
         }
 
         private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelSelectedFunction_Click(object sender, EventArgs e)
         {
 
         }

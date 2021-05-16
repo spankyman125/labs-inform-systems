@@ -47,11 +47,12 @@ namespace InformSys1
             this.ConnectionInfoLabel = new System.Windows.Forms.Label();
             this.button_Execute = new System.Windows.Forms.Button();
             this.dataGrid = new System.Windows.Forms.DataGridView();
-            this.listBoxFunction = new System.Windows.Forms.ListBox();
             this.labelSelectedFunction = new System.Windows.Forms.Label();
-            this.buttonView = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.treeView = new System.Windows.Forms.TreeView();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.ParamTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -238,36 +239,16 @@ namespace InformSys1
             this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
             this.dataGrid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGrid_CellEndEdit);
             // 
-            // listBoxFunction
-            // 
-            this.listBoxFunction.FormattingEnabled = true;
-            this.listBoxFunction.ItemHeight = 20;
-            this.listBoxFunction.Location = new System.Drawing.Point(12, 424);
-            this.listBoxFunction.Name = "listBoxFunction";
-            this.listBoxFunction.Size = new System.Drawing.Size(158, 104);
-            this.listBoxFunction.TabIndex = 20;
-            this.listBoxFunction.SelectedIndexChanged += new System.EventHandler(this.ListBox_SelectedIndexChanged);
-            // 
             // labelSelectedFunction
             // 
             this.labelSelectedFunction.AutoSize = true;
             this.labelSelectedFunction.ForeColor = System.Drawing.Color.Black;
             this.labelSelectedFunction.Location = new System.Drawing.Point(12, 401);
             this.labelSelectedFunction.Name = "labelSelectedFunction";
-            this.labelSelectedFunction.Size = new System.Drawing.Size(68, 20);
+            this.labelSelectedFunction.Size = new System.Drawing.Size(72, 20);
             this.labelSelectedFunction.TabIndex = 21;
-            this.labelSelectedFunction.Text = "Function:";
-            // 
-            // buttonView
-            // 
-            this.buttonView.Enabled = false;
-            this.buttonView.Location = new System.Drawing.Point(97, 534);
-            this.buttonView.Name = "buttonView";
-            this.buttonView.Size = new System.Drawing.Size(73, 29);
-            this.buttonView.TabIndex = 22;
-            this.buttonView.Text = "View";
-            this.buttonView.UseVisualStyleBackColor = true;
-            this.buttonView.Click += new System.EventHandler(this.ButtonViewClick);
+            this.labelSelectedFunction.Text = "Функция:";
+            this.labelSelectedFunction.Click += new System.EventHandler(this.labelSelectedFunction_Click);
             // 
             // buttonSave
             // 
@@ -290,16 +271,43 @@ namespace InformSys1
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewItemSelected);
             this.treeView.DoubleClick += new System.EventHandler(this.TreeViewDoubleClick);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(12, 424);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(158, 28);
+            this.comboBox1.TabIndex = 25;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
+            // ParamTextBox
+            // 
+            this.ParamTextBox.Location = new System.Drawing.Point(12, 483);
+            this.ParamTextBox.Name = "ParamTextBox";
+            this.ParamTextBox.Size = new System.Drawing.Size(162, 27);
+            this.ParamTextBox.TabIndex = 26;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(12, 460);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 20);
+            this.label1.TabIndex = 27;
+            this.label1.Text = "Значение:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1314, 569);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ParamTextBox);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.buttonSave);
-            this.Controls.Add(this.buttonView);
             this.Controls.Add(this.labelSelectedFunction);
-            this.Controls.Add(this.listBoxFunction);
             this.Controls.Add(this.dataGrid);
             this.Controls.Add(this.button_Execute);
             this.Controls.Add(this.ConnectionInfoLabel);
@@ -348,12 +356,13 @@ namespace InformSys1
         private System.Windows.Forms.Label ConnectionInfoLabel;
         private System.Windows.Forms.Button button_Execute;
         private System.Windows.Forms.DataGridView dataGrid;
-        private System.Windows.Forms.ListBox listBoxFunction;
         private System.Windows.Forms.Label labelSelectedFunction;
-        private System.Windows.Forms.Button buttonView;
         private System.Windows.Forms.Button buttonExecute;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.TreeView treeView;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox ParamTextBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 
