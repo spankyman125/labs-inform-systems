@@ -35,7 +35,7 @@ namespace InformSys1
             ButtonConnect.Enabled = false;
             ButtonDisconnect.Enabled = true;
             //ButtonGetTable.Enabled = true;
-            buttonView.Enabled = true;
+           // buttonView.Enabled = true;
             button_Execute.Enabled = true;
 
             ConnectionInfoLabel.Text = "Connected";
