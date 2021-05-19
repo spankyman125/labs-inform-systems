@@ -18,7 +18,7 @@ namespace InformSys1
         DataSet dataset = new DataSet();
         HashSet<DataGridViewRow> rows_changed= new HashSet<DataGridViewRow>();
         NpgsqlConnectionStringBuilder builder;
- 
+
         public Form1()
         {
             InitializeComponent();
@@ -34,7 +34,9 @@ namespace InformSys1
             db_connection.Open();
             ButtonConnect.Enabled = false;
             ButtonDisconnect.Enabled = true;
-            //ButtonGetTable.Enabled = true;
+            ButtonBackup.Enabled = true;
+            ButtonRestore.Enabled = true;
+            ButtonGetTable.Enabled = true;
             buttonView.Enabled = true;
             button_Execute.Enabled = true;
 
@@ -90,7 +92,9 @@ namespace InformSys1
             ButtonGetTable.Enabled = false;
             buttonView.Enabled = false;
             buttonSave.Enabled = false;
-            button_Execute.Enabled = true;
+            ButtonBackup.Enabled = false;
+            ButtonRestore.Enabled = false;
+            button_Execute.Enabled = false;
             DataGridClear();
 
 
@@ -346,6 +350,53 @@ namespace InformSys1
         private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void Backup_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog fileDialog = new SaveFileDialog())
+            {
+
+                if (fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    fileDialog.Filter = "All files (*.*)|";
+                    String filepath = fileDialog.FileName;
+                    String pg_dump_path = "\"C:\\Program Files\\PostgreSQL\\13\\bin\\pg_dump.exe\"";
+                    String args = "--dbname=postgresql://" 
+                                    + UserTextBox.Text + ":" 
+                                    + PasswordTextBox.Text + "@" 
+                                    + ServerTextBox.Text + ":" 
+                                    + PortTextBox.Text + "/" 
+                                    + treeView.SelectedNode.Parent.Text
+                                    + " -Ft -f " + filepath;
+
+                    System.Diagnostics.Process.Start(pg_dump_path, args);
+                    MessageBox.Show("DB " + treeView.SelectedNode.Parent.Text +
+                                     " Dumped to " + filepath);
+                }
+            }
+        }
+
+        private void Restore_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog fileDialog = new OpenFileDialog())
+            {
+                if (fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    String filepath = fileDialog.FileName;
+                    String pg_restore_path = "\"C:\\Program Files\\PostgreSQL\\13\\bin\\pg_restore.exe\"";
+                    String args = "--dbname=postgresql://"
+                                    + UserTextBox.Text + ":"
+                                    + PasswordTextBox.Text + "@"
+                                    + ServerTextBox.Text + ":"
+                                    + PortTextBox.Text + "/"
+                                    + treeView.SelectedNode.Parent.Text
+                                    + " --clean " + filepath;
+                    System.Diagnostics.Process.Start(pg_restore_path, args);
+                    MessageBox.Show("DB " + treeView.SelectedNode.Parent.Text +
+                                     " Restored from " + filepath);
+                }
+            }
         }
     }
 }

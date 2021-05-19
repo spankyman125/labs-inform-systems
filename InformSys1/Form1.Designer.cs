@@ -52,6 +52,8 @@ namespace InformSys1
             this.buttonView = new System.Windows.Forms.Button();
             this.buttonSave = new System.Windows.Forms.Button();
             this.treeView = new System.Windows.Forms.TreeView();
+            this.ButtonBackup = new System.Windows.Forms.Button();
+            this.ButtonRestore = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -290,11 +292,35 @@ namespace InformSys1
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeViewItemSelected);
             this.treeView.DoubleClick += new System.EventHandler(this.TreeViewDoubleClick);
             // 
+            // ButtonBackup
+            // 
+            this.ButtonBackup.Enabled = false;
+            this.ButtonBackup.Location = new System.Drawing.Point(218, 534);
+            this.ButtonBackup.Name = "ButtonBackup";
+            this.ButtonBackup.Size = new System.Drawing.Size(94, 29);
+            this.ButtonBackup.TabIndex = 25;
+            this.ButtonBackup.Text = "Backup";
+            this.ButtonBackup.UseVisualStyleBackColor = true;
+            this.ButtonBackup.Click += new System.EventHandler(this.Backup_Click);
+            // 
+            // ButtonRestore
+            // 
+            this.ButtonRestore.Enabled = false;
+            this.ButtonRestore.Location = new System.Drawing.Point(318, 534);
+            this.ButtonRestore.Name = "ButtonRestore";
+            this.ButtonRestore.Size = new System.Drawing.Size(94, 29);
+            this.ButtonRestore.TabIndex = 26;
+            this.ButtonRestore.Text = "Restore";
+            this.ButtonRestore.UseVisualStyleBackColor = true;
+            this.ButtonRestore.Click += new System.EventHandler(this.Restore_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1314, 569);
+            this.Controls.Add(this.ButtonRestore);
+            this.Controls.Add(this.ButtonBackup);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonView);
@@ -354,6 +380,8 @@ namespace InformSys1
         private System.Windows.Forms.Button buttonExecute;
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.TreeView treeView;
+        private System.Windows.Forms.Button ButtonBackup;
+        private System.Windows.Forms.Button ButtonRestore;
     }
 }
 
