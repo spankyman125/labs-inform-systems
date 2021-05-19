@@ -24,21 +24,16 @@ namespace InformSys1
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void Connect_Click(object sender, EventArgs e)
         {
             db_connection.Open();
             ButtonConnect.Enabled = false;
             ButtonDisconnect.Enabled = true;
-            //ButtonGetTable.Enabled = true;
-           // buttonView.Enabled = true;
-            button_Execute.Enabled = true;
+            ButtonExecute.Enabled = true;
+            ComboBoxFunc.Enabled = true;
+            ParamTextBox.Enabled = true;
 
-            ConnectionInfoLabel.Text = "Connected";
+            ConnectionInfoLabel.Text = "Подключено";
             ConnectionInfoLabel.ForeColor = Color.Green;
 
             InitTreeView();
@@ -56,10 +51,10 @@ namespace InformSys1
 
         private void InitListBox()
         {
-            comboBox1.Items.Add("Список преподавателей кафедры");
-            comboBox1.Items.Add("Название кафедры преподавателя и сведения");
-            comboBox1.Items.Add("Список дисциплин кафедры");
-            comboBox1.Items.Add("Список кафедр");
+            ComboBoxFunc.Items.Add("Список преподавателей кафедры");
+            ComboBoxFunc.Items.Add("Название кафедры преподавателя и сведения");
+            ComboBoxFunc.Items.Add("Список дисциплин кафедры");
+            ComboBoxFunc.Items.Add("Список кафедр");
         }
 
         private void Disconnect_click(object sender, EventArgs e)
@@ -67,15 +62,14 @@ namespace InformSys1
             db_connection.Close();
             ButtonConnect.Enabled = true;
             ButtonDisconnect.Enabled = false;
-            ButtonGetTable.Enabled = false;
+            ButtonExecute.Enabled = false;
+            ComboBoxFunc.Enabled = false;
+            ParamTextBox.Enabled = false;
             buttonSave.Enabled = false;
-            button_Execute.Enabled = true;
             DataGridClear();
-
-
-            ConnectionInfoLabel.Text = "Disconnected";
+            ConnectionInfoLabel.Text = "Отключено";
             ConnectionInfoLabel.ForeColor = Color.Red;
-            comboBox1.Items.Clear();
+            ComboBoxFunc.Items.Clear();
             treeView.Nodes.Clear();
         }
 
@@ -108,12 +102,12 @@ namespace InformSys1
             }
             catch
             {
-                InitInfoLabel.Text = "Error, no init";
+                InitInfoLabel.Text = "Ошибка инициализации";
                 return;
             }
             if (db_connection.State == ConnectionState.Open)
             {
-                InitInfoLabel.Text = "Connected to DB";
+                InitInfoLabel.Text = "Инициализировано";
                 InitInfoLabel.ForeColor = Color.Green;
                 ButtonInit.Enabled = false;
                 ButtonConnect.Enabled = true;
@@ -128,14 +122,9 @@ namespace InformSys1
             }
             else
             {
-                InitInfoLabel.Text = "Error, no init";
+                InitInfoLabel.Text = "Ошибка инициализации";
             }
             db_connection.Close();
-        }
-
-        private void ButtonGetTable_Click(object sender, EventArgs e)
-        {
-            getTable();
         }
 
         private void getTable()
@@ -144,7 +133,7 @@ namespace InformSys1
             {
                 rows_changed.Clear();
                 DataGridClear();
-                //builder.Database = treeView.SelectedNode.Parent.Text;
+                dataGrid.ReadOnly = false;
                 db_connection_string = builder.ConnectionString;
 
                 db_connection.Close();
@@ -161,42 +150,44 @@ namespace InformSys1
 
         private void Button_Execute_Click(object sender, EventArgs e)
         {
-           string funcName = comboBox1.GetItemText(comboBox1.SelectedItem);
+           string funcName = ComboBoxFunc.GetItemText(ComboBoxFunc.SelectedItem);
            NpgsqlCommand command = null;
 
             switch (funcName)
             {
                 case "Список преподавателей кафедры":
-                    command = new NpgsqlCommand("select getEducators(@0)", db_connection);
+                    command = new NpgsqlCommand("select *from getEducators(@0)", db_connection);
                     command.Parameters.AddWithValue("0", ParamTextBox.Text);
                     break;
 
                 case "Название кафедры преподавателя и сведения":
-                    command = new NpgsqlCommand("select getDepartment(@0)", db_connection);
+                    command = new NpgsqlCommand("select *from getDepartment(@0)", db_connection);
                     command.Parameters.AddWithValue("0", ParamTextBox.Text);
                     break;
 
                 case "Список дисциплин кафедры":
-                    command = new NpgsqlCommand("select getDisciplines(@0)", db_connection);
+                    command = new NpgsqlCommand("select *from getDisciplines(@0)", db_connection);
                     command.Parameters.AddWithValue("0", ParamTextBox.Text);
                     break;
 
                 case "Список кафедр":
-                    command = new NpgsqlCommand("select getDepartmentsAll()", db_connection);
+                    command = new NpgsqlCommand("select *from getDepartmentsAll()", db_connection);
                     break;
 
-
             }
-            command.ExecuteNonQuery();
+            DataGridClear();
+            dataGrid.ReadOnly = true;
+            NpgsqlDataAdapter dataAdapter = new(command);
+            dataAdapter.Fill(dataset, funcName);
+            dataGrid.DataSource = dataset.Tables[funcName];
         }
-
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            Form updateInfo = new Form() { Text="Confirm changes",Height = 400, Width = 920};
+            Form updateInfo = new Form() { Text="Подтвердите изменения",Height = 400, Width = 920};
             DataTable table = ((DataTable)dataGrid.DataSource).Clone();
-            Button confirmButton = new Button() { Text="Confirm", Left = 10,Top = 315, Height = 30 };
-            Button cancelButton = new Button() { Text = "Cancel" , Left = 90, Top = 315, Height = 30 };
+            Button confirmButton = new Button() { Text="Да", Left = 10,Top = 315, Height = 30 };
+            Button cancelButton = new Button() { Text = "Нет" , Left = 90, Top = 315, Height = 30 };
 
             foreach (DataGridViewRow row in rows_changed)
             {
@@ -223,20 +214,19 @@ namespace InformSys1
                 }
                 catch
                 {
-                    MessageBox.Show("Wrong data","Error");
+                    MessageBox.Show("Неверные данные","Ошибка");
                 }
                 
             };
             cancelButton.Click += (s, e) =>
-              {
+            {
                   updateInfo.Close();
-              };
+            };
             updateInfo.Controls.Add(changedRowsList);
             updateInfo.Controls.Add(confirmButton);
             updateInfo.Controls.Add(cancelButton);
 
             updateInfo.ShowDialog();
-
 
         }
 
@@ -249,29 +239,10 @@ namespace InformSys1
             rows_changed.Add(dataGrid.Rows[rowIndex]);
         }
 
-        private void TreeViewItemSelected(object sender, TreeViewEventArgs e)
-        {
-            ButtonGetTable.Enabled = true;
-        }
-
         private void TreeViewDoubleClick(object sender, EventArgs e)
         {
             getTable();
         }
 
-        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void labelSelectedFunction_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
